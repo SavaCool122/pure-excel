@@ -1,0 +1,23 @@
+{
+  "name": "excel-course-app",
+  "version": "1.0.0",
+  "description": "Pure JavaScript Excel App",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SavaCool122/pure-excel.git"
+  },
+  "keywords": [
+    "js",
+    "exel"
+  ],
+  "author": "Sava",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SavaCool122/pure-excel/issues"
+  },
+  "homepage": "https://github.com/SavaCool122/pure-excel#readme"
+}
