@@ -37,6 +37,26 @@ class Dom {
     }
     return this
   }
+
+  closest(selector) {
+    return _(this.$el.closest(selector))
+  }
+
+  get data() {
+    return this.$el.dataset
+  }
+
+  findAll(selector) {
+    return this.$el.querySelectorAll(selector)
+  }
+
+  getCords() {
+    return this.$el.getBoundingClientRect()
+  }
+
+  css(options) {
+    Object.keys(options).forEach(key => this.$el.style[key] = [options[key]])
+  }
 }
 
 export function _(selector) {
