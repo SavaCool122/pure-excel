@@ -1,7 +1,7 @@
 import {createToolbar} from '@/components/toolbar/Toolbar.template';
 import {ExcelStateComponente} from '@core/ExcelStateComponente';
 import {_} from '@core/dom';
-import {initialState} from '@/vuex/initialState';
+import {normalizeInitialState} from '@/vuex/initialState';
 
 export class Toolbar extends ExcelStateComponente {
   static className = 'excel__toolbar'
@@ -16,7 +16,7 @@ export class Toolbar extends ExcelStateComponente {
   }
 
   prepare() {
-    this.initState(initialState)
+    this.initState(normalizeInitialState(this.state))
   }
 
   get template() {

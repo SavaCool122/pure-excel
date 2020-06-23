@@ -19,7 +19,7 @@ export class Table extends ExcelComponent {
   }
 
   toHTML() {
-    return createTable(20, this.store.getState())
+    return createTable(30, this.store.getState())
   }
 
   prepare() {
@@ -52,10 +52,10 @@ export class Table extends ExcelComponent {
   }
 
   selectCell($cell) {
-    this.selection.select($cell)
-    this.$emit('table:select', $cell)
     const styles = $cell.getStyle(Object.keys(defaultStyle))
+    this.selection.select($cell)
     this.$dispatch(actions.changeStyles(styles))
+    this.$emit('table:select', $cell)
   }
 
   async resizeTable(event) {
