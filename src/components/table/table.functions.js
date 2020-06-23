@@ -24,10 +24,10 @@ export function nextSelector(key, {col, row}) {
     col++
     break
   case 'ArrowLeft':
-    col = col < MIN_VALUE ? MIN_VALUE : col - 1
+    col = col <= MIN_VALUE ? MIN_VALUE : col - 1
     break
   case 'ArrowUp':
-    row = row < MIN_VALUE ? MIN_VALUE : row - 1
+    row = row <= MIN_VALUE ? MIN_VALUE : row - 1
     break
   }
   return `[data-id="${row}:${col}"]`

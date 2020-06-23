@@ -3,7 +3,10 @@ import {TableSelection} from '@/components/table/TableSelection';
 import {createTable} from '@/components/table/template';
 import {resizeHandler} from '@/components/table/resize';
 import {matrix, nextSelector} from '@/components/table/table.functions';
+import * as actions from '@/vuex/actions'
 import {_} from '@core/dom';
+import {parse} from '@core/parse'
+import {defaultStyle} from '@/constans';
 
 export class Table extends ExcelComponent {
   static className = 'excel__table'
@@ -16,7 +19,7 @@ export class Table extends ExcelComponent {
   }
 
   toHTML() {
-    return createTable(20)
+    return createTable(20, this.store.getState())
   }
 
   prepare() {
@@ -27,21 +30,46 @@ export class Table extends ExcelComponent {
     super.init()
 
     const $cell = this.$root.find('[data-id="0:0"]')
-    this.selection.select($cell)
-    this.$emit('table:select', $cell)
+    this.selectCell($cell)
 
-    this.$on('formula:input', text => {
-      this.selection.current.text(text)
+    this.$on('formula:input', value => {
+      this.selection.current.attr('data-value', value)
+          .text(parse(value))
+      this.updateTextInStore(value)
     })
 
     this.$on('formula:done', () => {
       this.selection.current.focus()
     })
+
+    this.$on('toolbar:applyStyle', value => {
+      this.selection.applyStyle(value)
+      this.$dispatch(actions.applyStyle({
+        value,
+        ids: this.selection.selectedIds
+      }))
+    })
+  }
+
+  selectCell($cell) {
+    this.selection.select($cell)
+    this.$emit('table:select', $cell)
+    const styles = $cell.getStyle(Object.keys(defaultStyle))
+    this.$dispatch(actions.changeStyles(styles))
+  }
+
+  async resizeTable(event) {
+    try {
+      const data = await resizeHandler(this.$root, event)
+      this.$dispatch(actions.tableResize(data))
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   onMousedown(event) {
     if (event.target.dataset.resize) {
-      resizeHandler(this.$root, event)
+      this.resizeTable(event)
     } else if (event.target.dataset.type === 'cell') {
       const $target = _(event.target)
       if (event.shiftKey) {
@@ -49,8 +77,7 @@ export class Table extends ExcelComponent {
           .map(id => this.$root.find(`[data-id='${id}']`))
         this.selection.selectGroup($cells)
       } else {
-        this.selection.select(_(event.target))
-        this.$emit('table:select', _(event.target))
+        this.selectCell($target)
       }
     }
   }
@@ -74,8 +101,16 @@ export class Table extends ExcelComponent {
     }
   }
 
+  updateTextInStore(value) {
+    this.$dispatch(actions.changeText({
+      id: this.selection.current.id(),
+      value
+    }))
+  }
+
   onInput(event) {
     this.$emit('table:input', _(event.target))
+    this.updateTextInStore(_(event.target).text())
   }
 }
 
