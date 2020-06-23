@@ -1,4 +1,4 @@
-import {APPLY_STYLE, TABLE_RESIZE} from './types';
+import {APPLY_STYLE, TABLE_RESIZE, UPDATE_DATE} from './types';
 import {CHANGE_STYLES, CHANGE_TEXT, CHANGE_TITLE} from '@/vuex/types';
 
 export function rootReducer(state, action) {
@@ -30,6 +30,8 @@ export function rootReducer(state, action) {
     }
   case CHANGE_TITLE:
     return {...state, title: action.data}
+  case UPDATE_DATE:
+    return {...state, openedDate: new Date().toJSON()}
   default: return state
   }
 }
