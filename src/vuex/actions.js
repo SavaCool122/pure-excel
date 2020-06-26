@@ -7,7 +7,7 @@ import {
   UPDATE_DATE
 } from './types';
 
-// Action creater
+// Action create
 export function tableResize(data) {
   return {
     type: TABLE_RESIZE,

@@ -53,7 +53,6 @@ export class ExcelPage extends Page {
   }
 
   async getRoot() {
-
     const state = await this.processor.client.get()
     const store = createStore(rootReducer, normalizeInitialState(state))
 
