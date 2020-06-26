@@ -1,13 +1,13 @@
-import {Page} from '@core/Page';
-import {createStore} from '@core/store/createStore';
-import {rootReducer} from '@/vuex/rootReducer';
+import {Page} from '@core/Page'
+import {createStore} from '@core/store/createStore'
+import {rootReducer} from '@/vuex/rootReducer'
+import {Excel} from '@/components/excel/Excel'
+import {Header} from '@/components/header/Header'
+import {Toolbar} from '@/components/toolbar/Toolbar'
+import {Formula} from '@/components/formula/Formula'
+import {Table} from '@/components/table/Table'
+import {normalizeInitialState} from '@/vuex/initialState'
 import {debounce, storage} from '@core/utils';
-import {Excel} from '@/components/excel/Excel';
-import {Header} from '@/components/header/Header';
-import {Toolbar} from '@/components/toolbar/Toolbar';
-import {Formula} from '@/components/formula/Formula';
-import {Table} from '@/components/table/Table';
-import {normalizeInitialState} from '@/vuex/initialState';
 
 function storageName(param) {
   return 'excel:' + param
@@ -16,7 +16,7 @@ function storageName(param) {
 class StateProcessor {
   constructor(client, delay = 300) {
     this.client = client
-    this.listen = debounce(this.listen().bind(this), delay)
+    this.listen = debounce(this.listen.bind(this), delay)
   }
   listen(state) {
     this.client.save(state)
@@ -44,24 +44,26 @@ class LocalStorageClient {
 
 export class ExcelPage extends Page {
   constructor(param) {
-    super(param);
+    super(param)
 
     this.storeSub = null
     this.processor = new StateProcessor(
-      new LocalStorageClient(this.params)
+        new LocalStorageClient(this.params)
     )
   }
 
   async getRoot() {
-    const state = await this.processor.client.get()
-    const store = createStore(rootReducer, normalizeInitialState(state))
+    const state = await this.processor.get()
+    const initialState = normalizeInitialState(state)
+    const store = createStore(rootReducer, initialState)
 
-    this.storeSub = store.subscribe(this.processor.listen())
+    this.storeSub = store.subscribe(this.processor.listen)
 
-    this.excel = new Excel( {
-    components: [Header, Toolbar, Formula, Table],
-    store
+    this.excel = new Excel({
+      components: [Header, Toolbar, Formula, Table],
+      store
     })
+
     return this.excel.getRoot()
   }
 
